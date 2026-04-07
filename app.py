@@ -29,7 +29,14 @@ from agents_layer.pipeline import run_eda_pipeline
 
 @st.cache_data
 def load_data(file_path):
-    return pd.read_csv(file_path)
+    file_path = str(file_path)
+
+    if file_path.lower().endswith(".csv"):
+        return pd.read_csv(file_path)
+    elif file_path.lower().endswith(".xlsx"):
+        return pd.read_excel(file_path)
+    else:
+        raise ValueError("Only CSV and XLSX files are supported.")
 
 @st.cache_data
 def run_pipeline_cached(file_bytes, file_name):
@@ -693,8 +700,8 @@ else:
                 uploaded_file.getvalue(),
                 uploaded_file.name
             )
-    except Exception:
-        st.error("❌ Failed to process file. Please upload a valid file.")
+    except Exception as e:
+        st.error(f"❌ Failed to process file: {e}")
         st.stop()
 
     raw_df = load_data(results["cleaned_file"])
