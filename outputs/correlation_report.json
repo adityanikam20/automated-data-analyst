@@ -1,0 +1,7 @@
+{
+  "numeric_columns": [
+    "unnamed_0"
+  ],
+  "top_pairs": [],
+  "summary": "Not enough numeric columns for correlation analysis."
+}

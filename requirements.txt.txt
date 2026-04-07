@@ -1,0 +1,10 @@
+openai-agents
+openai
+pandas
+numpy
+scipy
+plotly
+streamlit
+openpyxl
+python-dotenv
+reportlab
