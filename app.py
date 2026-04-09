@@ -32,7 +32,10 @@ def load_data(file_path):
     file_path = str(file_path)
 
     if file_path.lower().endswith(".csv"):
-        return pd.read_csv(file_path)
+        try:
+            return pd.read_csv(file_path, encoding="utf-8")
+        except:
+            return pd.read_csv(file_path, encoding="latin-1")
     elif file_path.lower().endswith(".xlsx"):
         return pd.read_excel(file_path)
     else:
@@ -625,7 +628,10 @@ if uploaded_file is not None:
         file_ext = uploaded_file.name.split(".")[-1].lower()
 
         if file_ext == "csv":
-            preview_df = pd.read_csv(uploaded_file)
+            try:
+                preview_df = pd.read_csv(uploaded_file, encoding="utf-8")
+            except:
+                preview_df = pd.read_csv(uploaded_file, encoding="latin-1")
         elif file_ext == "xlsx":
             preview_df = pd.read_excel(uploaded_file)
         else:
