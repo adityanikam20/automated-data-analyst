@@ -8,11 +8,6 @@ from datetime import datetime
 import pandas as pd
 import plotly.express as px
 import streamlit as st
-import plotly.io as pio
-
-pio.templates.default = "plotly_dark"
-COLOR_THEME = px.colors.qualitative.Vivid
-
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -26,6 +21,29 @@ from reportlab.platypus import (
 )
 
 from agents_layer.pipeline import run_eda_pipeline
+import plotly.io as pio
+
+pio.templates.default = "plotly_dark"
+
+PRIMARY = "#7c3aed"
+SECONDARY = "#06b6d4"
+SUCCESS = "#22c55e"
+WARNING = "#f59e0b"
+DANGER = "#ef4444"
+BG = "#0b1020"
+CARD = "#121a2b"
+BORDER = "#243041"
+TEXT = "#e5e7eb"
+MUTED = "#94a3b8"
+
+COLOR_THEME = [
+    PRIMARY,
+    SECONDARY,
+    SUCCESS,
+    WARNING,
+    DANGER,
+    "#3b82f6",
+]
 
 @st.cache_data
 def load_data(file_path):
@@ -59,6 +77,19 @@ def get_summary_cached(df, numeric_cols, categorical_cols):
 def get_corr_cached(df):
     return get_filtered_correlation_report(df)
 
+def style_fig(fig):
+    fig.update_layout(
+        template="plotly_dark",
+        paper_bgcolor=CARD,
+        plot_bgcolor=CARD,
+        font=dict(color=TEXT),
+        margin=dict(l=20, r=20, t=50, b=20),
+        legend=dict(
+            bgcolor="rgba(0,0,0,0)",
+            borderwidth=0
+        ),
+    )
+    return fig
 
 def get_chart_recommendations(df, numeric_cols, categorical_cols):
     recommendations = []
@@ -857,7 +888,7 @@ else:
                 color="Column",
                 color_discrete_sequence=COLOR_THEME
             )
-            fig_missing.update_layout(margin=dict(l=20, r=20, t=50, b=20))
+            fig_missing = style_fig(fig_missing)
             st.plotly_chart(fig_missing, use_container_width=True, key="missing_chart")
             st.markdown('</div>', unsafe_allow_html=True)
 
@@ -929,7 +960,7 @@ else:
                 title="Correlation Heatmap",
                 color_continuous_scale="turbo"
             )
-            fig_corr.update_layout(margin=dict(l=20, r=20, t=50, b=20))
+            fig_corr = style_fig(fig_corr)
             st.plotly_chart(fig_corr, use_container_width=True, key="corr_heatmap")
 
             corr_vals = corr.unstack().sort_values(ascending=False)
@@ -969,7 +1000,7 @@ else:
                     title=rec["title"],
                     color_discrete_sequence=COLOR_THEME
                 )
-                fig.update_layout(margin=dict(l=20, r=20, t=50, b=20))
+                fig_hist = style_fig(fig_hist)
                 st.plotly_chart(fig, use_container_width=True, key=f"rec_hist_{i}")
 
             elif rec["type"] == "scatter":
@@ -981,7 +1012,7 @@ else:
                     color=df[rec["x"]],
                     color_continuous_scale="turbo"
                 )
-                fig.update_layout(margin=dict(l=20, r=20, t=50, b=20))
+                fig_top_scatter = style_fig(fig_top_scatter)
                 st.plotly_chart(fig, use_container_width=True, key=f"rec_scatter_{i}")
 
             elif rec["type"] == "bar":
@@ -995,7 +1026,7 @@ else:
                     color=rec["column"],
                     color_discrete_sequence=COLOR_THEME
                 )
-                fig.update_layout(margin=dict(l=20, r=20, t=50, b=20))
+                fig_bar = style_fig(fig_bar)
                 st.plotly_chart(fig, use_container_width=True, key=f"rec_bar_{i}")
 
             elif rec["type"] == "pie":
@@ -1008,7 +1039,7 @@ else:
                     title=rec["title"],
                     color_discrete_sequence=COLOR_THEME
                 )
-                fig.update_layout(margin=dict(l=20, r=20, t=50, b=20))
+                fig_pie = style_fig(fig_pie)
                 st.plotly_chart(fig, use_container_width=True, key=f"rec_pie_{i}")
 
         st.markdown('</div>', unsafe_allow_html=True)
@@ -1027,7 +1058,7 @@ else:
                     title=f"Distribution of {hist_col}",
                     color_discrete_sequence=COLOR_THEME
                 )
-                fig_hist.update_layout(margin=dict(l=20, r=20, t=50, b=20))
+                fig_hist = style_fig(fig_hist)
                 st.plotly_chart(fig_hist, use_container_width=True, key=f"hist_{hist_col}")
                 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1042,7 +1073,7 @@ else:
                     title=f"Box Plot of {box_col}",
                     color_discrete_sequence=COLOR_THEME
                 )
-                fig_box.update_layout(margin=dict(l=20, r=20, t=50, b=20))
+                fig_box = style_fig(fig_box)
                 st.plotly_chart(fig_box, use_container_width=True, key=f"box_{box_col}")
                 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1063,7 +1094,7 @@ else:
                 color=df[x_col],
                 color_continuous_scale="turbo"
             )
-            fig_scatter.update_layout(margin=dict(l=20, r=20, t=50, b=20))
+            fig_top_scatter = style_fig(fig_top_scatter)
             st.plotly_chart(fig_scatter, use_container_width=True, key=f"scatter_{x_col}_{y_col}")
             st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1085,7 +1116,7 @@ else:
                     color=cat_col,
                     color_discrete_sequence=COLOR_THEME
                 )
-                fig_bar.update_layout(margin=dict(l=20, r=20, t=50, b=20))
+                fig_bar = style_fig(fig_bar)
                 st.plotly_chart(fig_bar, use_container_width=True, key=f"bar_{cat_col}")
                 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1103,7 +1134,7 @@ else:
                     title=f"Composition of {pie_col}",
                     color_discrete_sequence=COLOR_THEME
                 )
-                fig_pie.update_layout(margin=dict(l=20, r=20, t=50, b=20))
+                fig_pie = style_fig(fig_pie)
                 st.plotly_chart(fig_pie, use_container_width=True, key=f"pie_{pie_col}")
                 st.markdown('</div>', unsafe_allow_html=True)
 
