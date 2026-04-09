@@ -32,7 +32,7 @@ pip install -r requirements.txt
 streamlit run app.py
 ---
 🌐 Live Demo
-👉 (Add your deployed link here)
+👉 https://automated-data-analyst-a.streamlit.app/
 ---
 📊 How It Works
 1. Upload a dataset (CSV or XLSX)
