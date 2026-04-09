@@ -44,6 +44,19 @@ COLOR_THEME = [
     DANGER,
     "#3b82f6",
 ]
+def style_fig(fig):
+    fig.update_layout(
+        template="plotly_dark",
+        paper_bgcolor=CARD,
+        plot_bgcolor=CARD,
+        font=dict(color=TEXT),
+        margin=dict(l=20, r=20, t=50, b=20),
+        legend=dict(
+            bgcolor="rgba(0,0,0,0)",
+            borderwidth=0
+        ),
+    )
+    return fig
 
 @st.cache_data
 def load_data(file_path):
