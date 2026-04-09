@@ -90,20 +90,6 @@ def get_summary_cached(df, numeric_cols, categorical_cols):
 def get_corr_cached(df):
     return get_filtered_correlation_report(df)
 
-def style_fig(fig):
-    fig.update_layout(
-        template="plotly_dark",
-        paper_bgcolor=CARD,
-        plot_bgcolor=CARD,
-        font=dict(color=TEXT),
-        margin=dict(l=20, r=20, t=50, b=20),
-        legend=dict(
-            bgcolor="rgba(0,0,0,0)",
-            borderwidth=0
-        ),
-    )
-    return fig
-
 def get_chart_recommendations(df, numeric_cols, categorical_cols):
     recommendations = []
 
@@ -986,7 +972,7 @@ else:
                 x = corr_vals.index[0][0]
                 y = corr_vals.index[0][1]
                 fig_top_scatter = px.scatter(df, x=x, y=y, title=f"{x} vs {y}")
-                fig_top_scatter.update_layout(margin=dict(l=20, r=20, t=50, b=20))
+                fig_top_scatter = style_fig(fig_top_scatter)
                 st.plotly_chart(fig_top_scatter, use_container_width=True, key="top_scatter")
         else:
             st.info("Not enough numeric columns for correlation analysis.")
@@ -1013,7 +999,7 @@ else:
                     title=rec["title"],
                     color_discrete_sequence=COLOR_THEME
                 )
-                fig_hist = style_fig(fig_hist)
+                fig = style_fig(fig)
                 st.plotly_chart(fig, use_container_width=True, key=f"rec_hist_{i}")
 
             elif rec["type"] == "scatter":
@@ -1025,7 +1011,7 @@ else:
                     color=df[rec["x"]],
                     color_continuous_scale="turbo"
                 )
-                fig_top_scatter = style_fig(fig_top_scatter)
+                fig = style_fig(fig)
                 st.plotly_chart(fig, use_container_width=True, key=f"rec_scatter_{i}")
 
             elif rec["type"] == "bar":
@@ -1039,7 +1025,7 @@ else:
                     color=rec["column"],
                     color_discrete_sequence=COLOR_THEME
                 )
-                fig_bar = style_fig(fig_bar)
+                fig = style_fig(fig)
                 st.plotly_chart(fig, use_container_width=True, key=f"rec_bar_{i}")
 
             elif rec["type"] == "pie":
@@ -1052,7 +1038,7 @@ else:
                     title=rec["title"],
                     color_discrete_sequence=COLOR_THEME
                 )
-                fig_pie = style_fig(fig_pie)
+                fig = style_fig(fig)
                 st.plotly_chart(fig, use_container_width=True, key=f"rec_pie_{i}")
 
         st.markdown('</div>', unsafe_allow_html=True)
@@ -1107,7 +1093,7 @@ else:
                 color=df[x_col],
                 color_continuous_scale="turbo"
             )
-            fig_top_scatter = style_fig(fig_top_scatter)
+            fig_scatter = style_fig(fig_scatter)
             st.plotly_chart(fig_scatter, use_container_width=True, key=f"scatter_{x_col}_{y_col}")
             st.markdown('</div>', unsafe_allow_html=True)
 
