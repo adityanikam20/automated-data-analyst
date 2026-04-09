@@ -547,6 +547,18 @@ def generate_pdf_report(
 # ---------- STYLES ----------
 st.markdown("""
 <style>
+.section-title {
+    color: #e5e7eb;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.section-subtitle {
+    color: #94a3b8;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
 .sidebar-preview-box {
     background: #0f172a;
     border: 1px solid #334155;
