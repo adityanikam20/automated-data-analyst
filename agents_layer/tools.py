@@ -2,6 +2,7 @@ import os
 import json
 from typing import Any, Dict, List, Tuple
 
+import chardet
 import numpy as np
 import pandas as pd
 
@@ -16,7 +17,20 @@ def load_dataset(file_path: str) -> pd.DataFrame:
     lower_path = file_path.lower()
 
     if lower_path.endswith(".csv"):
-        return pd.read_csv(file_path)
+        # Auto-detect encoding for any CSV file
+        with open(file_path, 'rb') as f:
+            result = chardet.detect(f.read())
+        encoding = result['encoding'] or 'utf-8'
+        try:
+            return pd.read_csv(file_path, encoding=encoding)
+        except Exception:
+            try:
+                return pd.read_csv(file_path, encoding='utf-8')
+            except Exception:
+                try:
+                    return pd.read_csv(file_path, encoding='latin-1')
+                except Exception:
+                    return pd.read_csv(file_path, encoding='cp1252')
 
     if lower_path.endswith(".xlsx"):
         raw_df = pd.read_excel(file_path, header=None)
